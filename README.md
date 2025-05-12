@@ -1,22 +1,17 @@
--- Script Api (client-side) - KRNL, Delta, dll
-local player = game.Players.LocalPlayer
-local character = player.Character or player.CharacterAdded:Wait()
+-- FireEffectScript di ServerScriptService
+local fireEffect = game.ReplicatedStorage:WaitForChild("FireEffect")
 
--- Hapus api lama kalau ada
-for _, part in pairs(character:GetDescendants()) do
-    if part:IsA("Fire") then
-        part:Destroy()
-    end
-end
-
--- Tambahkan efek api ke seluruh BasePart karakter
-for _, part in pairs(character:GetDescendants()) do
-    if part:IsA("BasePart") then
+-- Fungsi untuk memunculkan efek api di tubuh pemain
+local function spawnFire(player)
+    local character = player.Character
+    if character and character:FindFirstChild("HumanoidRootPart") then
+        -- Membuat api di tubuh pemain
         local fire = Instance.new("Fire")
+        fire.Parent = character.HumanoidRootPart
         fire.Size = 10
-        fire.Heat = 25
-        fire.Parent = part
+        fire.Heat = 50
     end
 end
 
-print("Efek api berhasil ditambahkan ke tubuhmu!")
+-- Ketika RemoteEvent dipanggil, spawn api di tubuh pemain
+fireEffect.OnServerEvent:Connect(spawnFire)
